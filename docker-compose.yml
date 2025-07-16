@@ -1,0 +1,66 @@
+# docker-compose.yml (Corrected Version)
+version: '3.8'
+
+services:
+  udm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python udm/udm_server.py
+    volumes:
+      - ./udm:/app/udm
+      - ./shared:/app/shared
+    environment:
+      - PYTHONPATH=/app
+
+  ausf:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python ausf/ausf_server.py
+    volumes:
+      - ./ausf:/app/ausf
+      - ./shared:/app/shared
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      - udm
+
+  amf:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python amf/amf_server.py
+    volumes:
+      - ./amf:/app/amf
+      - ./shared:/app/shared
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      - ausf
+
+  gnb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python gnb/gnb_server.py
+    volumes:
+      - ./gnb:/app/gnb
+      - ./shared:/app/shared
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      - amf
+
+  ue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python ue/ue_client.py
+    volumes:
+      - ./ue:/app/ue
+      - ./shared:/app/shared
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      - gnb # Depends on gNB to ensure all servers are likely up
