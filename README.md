@@ -1,3 +1,4 @@
+
 key-derivation/
 ├── amf/
 │   └── amf_server.py
@@ -17,3 +18,5 @@ key-derivation/
 └── requirements.txt
 
 # This is a simulation of key derivation on 5G system. 
+# docker-compose down 
+# docker-compose up --build --> to start docker container
